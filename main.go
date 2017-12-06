@@ -1,12 +1,13 @@
 package main
 
 import (
+	"cards/cards"
 	"fmt"
 )
 
 func main() {
-	// deck := cards.GetStandardDeck()
-	// cardStack := cards.NewCardStack(cards.ReverseShuffle{}, deck, true)
-	// fmt.Println(cardStack)
-	fmt.Println(4 % 2)
+	deck := cards.GetStandardDeck()
+	cardStack := cards.NewCardStack(cards.PerfectShuffle{}, deck, true)
+	fmt.Printf("%+v\n", cardStack)
+
 }

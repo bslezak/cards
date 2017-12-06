@@ -1,7 +1,9 @@
 package cards
 
 import (
+	"log"
 	"math/rand"
+	"strconv"
 	"time"
 )
 
@@ -9,7 +11,9 @@ type ShuffleMethod interface {
 	Shuffle(CardStack) []Card
 }
 
-type ReverseShuffle struct{}
+type ReverseShuffle struct {
+	ShuffleTimes int
+}
 
 func (r ReverseShuffle) Shuffle(cardStack CardStack) []Card {
 	deckSize := len(cardStack.deck.cards)
@@ -23,7 +27,9 @@ func (r ReverseShuffle) Shuffle(cardStack CardStack) []Card {
 	return cards
 }
 
-type PerfectShuffle struct{}
+type PerfectShuffle struct {
+	ShuffleTimes int
+}
 
 func (p PerfectShuffle) Shuffle(cardStack CardStack) []Card {
 	cards := []Card{}
@@ -31,8 +37,9 @@ func (p PerfectShuffle) Shuffle(cardStack CardStack) []Card {
 	nextCardCount := GetNextCardCount()
 	evenOdd := 2
 
+	log.Println("Shuffling " + strconv.Itoa(p.ShuffleTimes) + " Times")
 	// Deal out a stack of cards randomly taking between 1 and 3 cards from top or bottom sequentially, do this 5 times
-	for count := 0; count < 5; count++ {
+	for count := 0; count < p.ShuffleTimes; count++ {
 		for cardStack.CardsLeft() > 0 {
 			if evenOdd%2 == 0 {
 				cards = append(cards, cardStack.DealCards(nextCardCount)...)
@@ -48,7 +55,7 @@ func (p PerfectShuffle) Shuffle(cardStack CardStack) []Card {
 		cards = []Card{}
 
 	}
-
+	// fmt.Printf("Cardstack:%+v\n", cardStack.remainingCards)
 	return cardStack.remainingCards
 }
 

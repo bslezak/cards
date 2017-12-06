@@ -4,6 +4,10 @@ type Deck struct {
 	cards []Card
 }
 
+func (deck Deck) GetCards() []Card {
+	return deck.cards
+}
+
 func GetStandardDeck() Deck {
 	deck := Deck{}
 
@@ -17,13 +21,17 @@ func GetStandardDeck() Deck {
 }
 
 func (c Card) StandardSuit() string {
-	suit := []string{"Club", "Heart", "Diamond", "Spade"}
+	suit := []string{"", "Clubs", "Hearts", "Diamonds", "Spades"}
 
 	return suit[c.suit]
 }
 
 func (c Card) StandardRank() string {
-	rank := []string{"Ace", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten", "Jack", "Queen", "King"}
+	rank := []string{"", "Ace", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten", "Jack", "Queen", "King"}
 
 	return rank[c.rank]
+}
+
+func (card Card) GetFace() string {
+	return card.StandardRank() + " of " + card.StandardSuit()
 }

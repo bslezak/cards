@@ -65,7 +65,7 @@ func (cardStack CardStack) CardsLeft() int {
 	return len(cardStack.remainingCards)
 }
 
-func (cardStack CardStack) GetDeviation() float64 {
+func (cardStack CardStack) GetAvgDev() float64 {
 	deviations := []float64{}
 
 	for count := 0; count < 51; count++ {

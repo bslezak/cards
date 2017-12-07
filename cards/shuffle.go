@@ -1,9 +1,7 @@
 package cards
 
 import (
-	"log"
 	"math/rand"
-	"strconv"
 	"time"
 )
 
@@ -29,15 +27,16 @@ func (r ReverseShuffle) Shuffle(cardStack CardStack) []Card {
 
 type PerfectShuffle struct {
 	ShuffleTimes int
+	MaxEntropy   int
 }
 
 func (p PerfectShuffle) Shuffle(cardStack CardStack) []Card {
 	cards := []Card{}
 
-	nextCardCount := GetNextCardCount()
+	nextCardCount := p.GetNextCardCount()
 	evenOdd := 2
 
-	log.Println("Shuffling " + strconv.Itoa(p.ShuffleTimes) + " Times")
+	// log.Println("Shuffling " + strconv.Itoa(p.ShuffleTimes) + " Times")
 	// Deal out a stack of cards randomly taking between 1 and 3 cards from top or bottom sequentially, do this 5 times
 	for count := 0; count < p.ShuffleTimes; count++ {
 		for cardStack.CardsLeft() > 0 {
@@ -48,7 +47,7 @@ func (p PerfectShuffle) Shuffle(cardStack CardStack) []Card {
 			}
 
 			evenOdd++
-			nextCardCount = GetNextCardCount()
+			nextCardCount = p.GetNextCardCount()
 		}
 
 		cardStack.remainingCards = cards
@@ -59,8 +58,109 @@ func (p PerfectShuffle) Shuffle(cardStack CardStack) []Card {
 	return cardStack.remainingCards
 }
 
-func GetNextCardCount() int {
+func (p PerfectShuffle) GetNextCardCount() int {
 	source := rand.NewSource(time.Now().UnixNano())
 	random := rand.New(source)
-	return random.Intn(5) + 1
+	return random.Intn(p.MaxEntropy) + 1
+}
+
+func (n NaturalShuffle) GetNextCardCount() int {
+	source := rand.NewSource(time.Now().UnixNano())
+	random := rand.New(source)
+	return random.Intn(n.MaxEntropy) + 1
+}
+
+type NaturalShuffle struct {
+	ShuffleTimes int
+	MaxEntropy   int
+}
+
+type SplitDeck struct {
+	right              []Card
+	left               []Card
+	currentSideCounter int
+}
+
+func (splitDeck *SplitDeck) DealCards(count int) []Card {
+	if splitDeck.currentSideCounter < 2 {
+		splitDeck.currentSideCounter = 2
+	}
+
+	cards := []Card{}
+	if splitDeck.currentSideCounter%2 == 0 {
+		cards = splitDeck.dealCardsRight(count)
+	} else {
+		cards = splitDeck.dealCardsLeft(count)
+	}
+	splitDeck.currentSideCounter++
+
+	return cards
+
+}
+
+func (splitDeck *SplitDeck) dealCardsRight(count int) []Card {
+	cards := []Card{}
+	if splitDeck.right != nil {
+		if len(splitDeck.right) > count {
+			cards = splitDeck.right[:count]
+			splitDeck.right = splitDeck.right[count:]
+		} else {
+			cards = splitDeck.right
+			cards = append(cards, splitDeck.left...)
+			splitDeck.right = nil
+			splitDeck.left = nil
+		}
+	} else {
+		cards = nil
+	}
+
+	return cards
+}
+
+func (splitDeck *SplitDeck) dealCardsLeft(count int) []Card {
+	cards := []Card{}
+	if splitDeck.left != nil {
+		if len(splitDeck.left) > count {
+			cards = splitDeck.left[:count]
+			splitDeck.left = splitDeck.left[count:]
+		} else {
+			cards = splitDeck.left
+			cards = append(cards, splitDeck.right...)
+			splitDeck.left = nil
+			splitDeck.right = nil
+		}
+	} else {
+		cards = nil
+	}
+
+	return cards
+}
+
+func (shuffler NaturalShuffle) Shuffle(cardStack CardStack) []Card {
+	remainingCards := cardStack.remainingCards
+	half := len(remainingCards) / 2
+
+	for shuffleCount := 0; shuffleCount < shuffler.ShuffleTimes; shuffleCount++ {
+		splitDeck := SplitDeck{Reverse(remainingCards[:half]), remainingCards[half:], 2}
+		newCards := []Card{}
+		nextCards := splitDeck.DealCards(shuffler.GetNextCardCount())
+		for ; nextCards != nil; nextCards = splitDeck.DealCards(shuffler.GetNextCardCount()) {
+			newCards = append(newCards, nextCards...)
+		}
+		remainingCards = newCards
+		// fmt.Printf("Cards:%v\n\n", remainingCards)
+	}
+
+	return remainingCards
+}
+
+func Reverse(cards []Card) []Card {
+	count := len(cards)
+
+	for index := 0; index < count/2; index++ {
+		last := count - index - 1
+		cards[index], cards[last] = cards[last], cards[index]
+	}
+
+	return cards
 }

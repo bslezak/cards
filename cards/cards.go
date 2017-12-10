@@ -1,22 +1,23 @@
 package cards
 
-// A Card
+// Card represents a playing card in the sytem
+// Cards always have a suit and a rank, both integer values
 type Card struct {
 	suit int
 	rank int
 }
 
-// Set the suit of a Card
+// SetSuit assigns the suit value of a card
 func (card *Card) SetSuit(suit int) {
 	card.suit = suit
 }
 
-// Set the rank of a card
+// SetRank assigns the rank value of a card
 func (card *Card) SetRank(rank int) {
 	card.rank = rank
 }
 
-// Create a new card provided a suit and rank
+// NewCard initializes a new Card provided a suit and rank
 func NewCard(suit int, rank int) Card {
 	return Card{suit, rank}
 }

@@ -4,14 +4,15 @@ import (
 	"math"
 )
 
-// A stack of cards that can be shuffled and dealt
+// CardStack stack of cards that can be shuffled and dealt
 type CardStack struct {
 	deck           Deck
 	shuffler       ShuffleMethod
 	remainingCards []Card
 }
 
-// Create a new card stack from a deck and shuffle method.
+// NewCardStack instantiates a new card stack provided a deck and shuffle method.
+// The parameter instantShuffle is a flag indicating whether the CardStack should be shuffled immediately after creation
 func NewCardStack(shuffler ShuffleMethod, deck Deck, instantShuffle bool) CardStack {
 	stack := CardStack{}
 	stack.deck = deck
@@ -25,40 +26,40 @@ func NewCardStack(shuffler ShuffleMethod, deck Deck, instantShuffle bool) CardSt
 	return stack
 }
 
-// Shuffle the card stack
+// Shuffle shuffles the cards in a cardstack by calling ShufflerMethod.Shuffle
 func (cardStack *CardStack) Shuffle() {
 	cardStack.ResetStack()
 	cardStack.remainingCards = cardStack.shuffler.Shuffle(*cardStack)
 }
 
-// Reset a card stack, setting it back to it's original state prior to shuffling
+// ResetStack returns a card stack back to it's original deck state prior to any shuffling
 func (cardStack *CardStack) ResetStack() {
 	deckSize := len(cardStack.deck.cards)
 	cardStack.remainingCards = make([]Card, deckSize)
 	copy(cardStack.remainingCards, cardStack.deck.cards)
 }
 
-// Deal cards from a cardstack
-func (cardStack *CardStack) DealCards(count int) []Card {
-	cards := []Card{}
-	if count < cardStack.CardsLeft() {
-		cards = cardStack.remainingCards[:count]
-		cardStack.remainingCards = cardStack.remainingCards[count:]
+// DealCards deals a specified number of cards from a cardstack
+func (cardStack *CardStack) DealCards(cardCount int) []Card {
+	var cards []Card
+	if cardCount < cardStack.CardsLeft() {
+		cards = cardStack.remainingCards[:cardCount]
+		cardStack.remainingCards = cardStack.remainingCards[cardCount:]
 	} else {
 		cards = cardStack.remainingCards
-		cardStack.remainingCards = []Card{}
+		cardStack.remainingCards = nil
 	}
 	// log.Println("Cards Remaining:" + strconv.Itoa(len(cardStack.remainingCards)))
 	return cards
 }
 
-// Deal cards from the bottom of a cardstack
-func (cardStack *CardStack) DealCardsBottom(count int) []Card {
-	cards := []Card{}
-	if count < cardStack.CardsLeft() {
+// DealCardsBottom deals cards from the bottom of a cardstack
+func (cardStack *CardStack) DealCardsBottom(cardCount int) []Card {
+	var cards []Card
+	if cardCount < cardStack.CardsLeft() {
 		lastCard := len(cardStack.remainingCards)
-		cards = cardStack.remainingCards[lastCard-count:]
-		cardStack.remainingCards = cardStack.remainingCards[:lastCard-count]
+		cards = cardStack.remainingCards[lastCard-cardCount:]
+		cardStack.remainingCards = cardStack.remainingCards[:lastCard-cardCount]
 	} else {
 		cards = cardStack.remainingCards
 		cardStack.remainingCards = []Card{}
@@ -67,26 +68,26 @@ func (cardStack *CardStack) DealCardsBottom(count int) []Card {
 	return cards
 }
 
-// Get the number of cards left in a stack
+// CardsLeft returns the number of cards left in a stack
 func (cardStack CardStack) CardsLeft() int {
 	return len(cardStack.remainingCards)
 }
 
-// Get the deviation of a cardstack in it's current state.
+// GetDeviation get the deviation of a cardstack in it's current state.
 // Deviation is determined by one cards proximity to another from it's unshuffled state. An unshuffled card stack would have a deviation of 0
 // The maximum deviation a card may have is 22, meaning the card next to it is of a different suit (+10) and is the lowest ranking card
 // next to the highest ranking card
 func (cardStack CardStack) GetDeviation() float64 {
 	deviations := []float64{}
 
-	for count := 0; count < 51; count++ {
-		card1 := cardStack.remainingCards[count]
-		card2 := cardStack.remainingCards[count+1]
+	for cardCount := 0; cardCount < 51; cardCount++ {
+		card1 := cardStack.remainingCards[cardCount]
+		card2 := cardStack.remainingCards[cardCount+1]
 		diff := 0.0
 		if card1.suit != card2.suit {
 			diff += 10
 		}
-		diff += math.Abs(float64(card1.rank-card2.rank)) + 13.0
+		diff += math.Abs(float64(card1.rank - card2.rank))
 		deviations = append(deviations, diff)
 	}
 	// fmt.Printf("Deviations:%+v\n", deviations)

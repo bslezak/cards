@@ -1,16 +1,16 @@
 package cards
 
-// A Deck of Cards
+// Deck is a deck of Cards
 type Deck struct {
 	cards []Card
 }
 
-// Get the Cards
+// GetCards returns all the Cards from the deck
 func (deck Deck) GetCards() []Card {
 	return deck.cards
 }
 
-// Create a standard deck of cards, 4 suits and 13 ranks
+// CreateStandardDeck creates a standard deck of cards, 4 suits and 13 ranks
 func CreateStandardDeck() Deck {
 	deck := Deck{}
 
@@ -23,21 +23,21 @@ func CreateStandardDeck() Deck {
 	return deck
 }
 
-// Convert suit integer to a string
-func (c Card) StandardSuit() string {
+// StandardSuit converts suit integer to a string
+func (card Card) StandardSuit() string {
 	suit := []string{"", "Clubs", "Hearts", "Diamonds", "Spades"}
 
-	return suit[c.suit]
+	return suit[card.suit]
 }
 
-// Convert rank integer to a string
-func (c Card) StandardRank() string {
+// StandardRank converts rank integer to a string
+func (card Card) StandardRank() string {
 	rank := []string{"", "Ace", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten", "Jack", "Queen", "King"}
 
-	return rank[c.rank]
+	return rank[card.rank]
 }
 
-// Get the textual representation of a card
+// GetFace gets the textual representation of a card
 func (card Card) GetFace() string {
 	return card.StandardRank() + " of " + card.StandardSuit()
 }

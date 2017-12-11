@@ -1,20 +1,8 @@
 package cards
 
-import (
-	"math/rand"
-	"time"
-)
-
-// GetNextCardCount returns a random integer between 1 and MaxEntropy+1
-func (shuffler NaturalShuffle) GetNextCardCount() int {
-	source := rand.NewSource(time.Now().UnixNano())
-	random := rand.New(source)
-	return random.Intn(shuffler.MaxEntropy) + 1
-}
-
 // NaturalShuffle is a Shuffler that attempts to shuffle cards in the most natural way possible
 type NaturalShuffle struct {
-	*Shuffler
+	Shuffler
 }
 
 // Shuffle a card stack in the most natural way possible

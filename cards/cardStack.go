@@ -93,7 +93,7 @@ func (cardStack CardStack) GetDeviation() float64 {
 	// fmt.Printf("Deviations:%+v\n", deviations)
 	product := float64(0)
 	for _, dev := range deviations {
-		product += math.Abs(dev) - 1
+		product += math.Abs(dev)
 	}
 	return product
 }

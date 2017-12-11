@@ -1,6 +1,6 @@
 package cards
 
-// Card represents a playing card in the sytem
+// Card represents a playing card in the system
 // Cards always have a suit and a rank, both integer values
 type Card struct {
 	suit int

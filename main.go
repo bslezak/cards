@@ -31,7 +31,7 @@ func runStats(entropy int) {
 		deviations := []float64{}
 
 		// Get a cardStack that will be shuffled by NaturalShuffle
-		cardStack := cards.NewCardStack(cards.NaturalShuffle{shuffleTimes, entropy}, deck, false)
+		cardStack := cards.NewCardStack(cards.NaturalShuffle{Shuffler: cards.Shuffler{ShuffleTimes: shuffleTimes, MaxEntropy: entropy}}, deck, false)
 
 		for index := 0; index < 1000; index++ {
 			cardStack.ResetStack()                                    // Reset the stack to reorder cards into their natural state
@@ -49,7 +49,7 @@ func runStats(entropy int) {
 	}
 }
 
-// Calculate and return the average devation for a population of float64 values
+// AvgDeviation calculates and returns the average deviation for a population of float64 values
 func AvgDeviation(deviations []float64) float64 {
 	total := 0.0
 	for _, dev := range deviations {

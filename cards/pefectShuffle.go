@@ -1,13 +1,8 @@
 package cards
 
-import (
-	"math/rand"
-	"time"
-)
-
 // PerfectShuffle is a shuffle that attempts to shuffle cards in a very uniform manner
 type PerfectShuffle struct {
-	*Shuffler
+	Shuffler
 }
 
 // Shuffle attempts to shuffle cards by uniformly taking cards from top or bottom of the card stack.
@@ -38,11 +33,4 @@ func (shuffler PerfectShuffle) Shuffle(cardStack CardStack) []Card {
 	}
 	// fmt.Printf("Cardstack:%+v\n", cardStack.remainingCards)
 	return cardStack.remainingCards
-}
-
-// GetNextCardCount returns a random integer between 1 and MaxEntropy+1
-func (shuffler PerfectShuffle) GetNextCardCount() int {
-	source := rand.NewSource(time.Now().UnixNano())
-	random := rand.New(source)
-	return random.Intn(shuffler.MaxEntropy) + 1
 }

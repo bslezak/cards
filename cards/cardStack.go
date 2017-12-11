@@ -39,7 +39,7 @@ func (cardStack *CardStack) ResetStack() {
 	copy(cardStack.remainingCards, cardStack.deck.cards)
 }
 
-// DealCards deals a specified number of cards from a cardstack
+// DealCards deals a specified number of cards from the top of a cardstack
 func (cardStack *CardStack) DealCards(cardCount int) []Card {
 	var cards []Card
 	if cardCount < cardStack.CardsLeft() {

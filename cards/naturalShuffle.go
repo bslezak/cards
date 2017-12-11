@@ -1,5 +1,10 @@
 package cards
 
+import (
+	"math/rand"
+	"time"
+)
+
 // NaturalShuffle is a Shuffler that attempts to shuffle cards in the most natural way possible
 type NaturalShuffle struct {
 	Shuffler
@@ -9,18 +14,25 @@ type NaturalShuffle struct {
 // TODO: Improve this by not splitting the deck perfectly each time
 func (shuffler NaturalShuffle) Shuffle(cardStack CardStack) []Card {
 	remainingCards := cardStack.remainingCards
-	half := len(remainingCards) / 2
+	midpointOffset := (len(remainingCards) / 2) + GetMidPointOffset()
 
 	for shuffleCount := 0; shuffleCount < shuffler.ShuffleTimes; shuffleCount++ {
-		splitDeck := SplitDeck{Reverse(remainingCards[:half]), remainingCards[half:], 2}
+		splitDeck := SplitDeck{Reverse(remainingCards[:midpointOffset]), remainingCards[midpointOffset:], 2}
 		newCards := []Card{}
 		nextCards := splitDeck.DealCards(shuffler.GetNextCardCount())
 		for ; nextCards != nil; nextCards = splitDeck.DealCards(shuffler.GetNextCardCount()) {
 			newCards = append(newCards, nextCards...)
 		}
 		remainingCards = newCards
-		// fmt.Printf("Cards:%v\n\n", remainingCards)
+		// fmt.Printf("Cards:%v\n\n", len(remainingCards))
 	}
 
 	return remainingCards
+}
+
+// GetMidPointOffset gets a signed integer between -3 and 4 to serve as an offset
+func GetMidPointOffset() int {
+	source := rand.NewSource(time.Now().UnixNano())
+	random := rand.New(source)
+	return random.Intn(7) - 3
 }

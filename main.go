@@ -1,19 +1,62 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 	"os"
 	"strconv"
 
 	"github.com/bslezak/cards/cards"
+	"github.com/fatih/color"
 )
 
 func main() {
-	// Get entropy from command line arg
-	entropy, _ := strconv.Atoi(os.Args[1])
 
-	// Run stats
-	runStats(entropy)
+	// Check command line args
+	if len(os.Args[1:]) > 0 {
+		// Get entropy from command line arg
+		entropy, errors := strconv.Atoi(os.Args[1])
+
+		if errors == nil {
+			naturalFlag := flag.Bool("natural", false, "Use natural shuffling method")
+			perfectFlag := flag.Bool("perfect", false, "Use perfect shuffling method")
+			flag.Parse()
+			if !*naturalFlag && !*perfectFlag {
+				PrintError("One of --natural or --perfect options should be set")
+			}
+			// Run stats
+			runStats(entropy)
+		} else {
+			PrintError("No entropy provided. Please provide an integer to seed entropy")
+		}
+	} else {
+		PrintHelp()
+	}
+
+}
+
+// PrintError prints an error, the help, and exits
+func PrintError(error string) {
+	color.Red(fmt.Sprintf("\nError: %s\n\n", error))
+	PrintHelp()
+	os.Exit(1)
+}
+
+// PrintHelp prints help and usage
+func PrintHelp() {
+	desc := `
+Cards runs simulations of card shuffling and prints statistics
+
+Usage:
+	cards.exe <entropy> (--natural | --perfect)
+	
+entropy	An unsigned integer. This is used during shuffling to determine how many random cards are chosen between 0 and value
+
+Options:
+	--natural	Use natural shuffling method
+	--perfect	Use perfect shuffling method
+	`
+	fmt.Println(desc)
 }
 
 // runStats creates a card deck and shuffles the deck 1000 times, collecting information on the statistical deviation of the deck

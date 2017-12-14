@@ -85,21 +85,20 @@ Options:
 // runStats creates a card deck and shuffles the deck 1000 times, collecting information on the statistical deviation of the deck
 func runStats(entropy int, shufflerName string) {
 
-	// Create a standard deck of cards
-	deck := cards.CreateStandardDeck()
-
 	// Start shuffleTimes at 1, but we will shift this value incrementing by power of 2
 	shuffleTimes := 1
+
+	// Create a cardStack that will be shuffled
+	deck := cards.CreateStandardDeck()
+	shuffler := cards.BuildShuffler(shufflerName, entropy)
+	cardStack := cards.NewCardStack(deck, shuffler, shuffleTimes, false)
 
 	// Loop 8 times, incremeting shuffleTimes by power of two
 	for iterate := 0; iterate < 8; iterate++ {
 		// Create a slice to collect stack deviations
 		deviations := []float64{}
 
-		// Create a cardStack that will be shuffled
-		shuffler := cards.BuildShuffler(shufflerName, shuffleTimes, entropy)
-		cardStack := cards.NewCardStack(shuffler, deck, false)
-
+		cardStack.ShuffleTimes = shuffleTimes
 		for index := 0; index < 1000; index++ {
 			cardStack.ResetStack()                                    // Reset the stack to reorder cards into their natural state
 			cardStack.Shuffle()                                       // Shuffle the cards

@@ -9,13 +9,12 @@ import (
 type ShuffleMethod interface {
 
 	// Shuffle a stack of Cards, returning a slice of Cards
-	Shuffle(CardStack) []Card
+	Shuffle(CardStack, int) []Card
 }
 
 // Shuffler retains static data for a ShuffleMethod
 type Shuffler struct {
-	ShuffleTimes int
-	MaxEntropy   int
+	MaxEntropy int
 }
 
 // Reverse reverses the order of a slice of Cards

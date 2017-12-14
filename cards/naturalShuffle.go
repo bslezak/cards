@@ -12,11 +12,11 @@ type NaturalShuffle struct {
 
 // Shuffle a card stack in the most natural way possible
 // TODO: Improve this by not splitting the deck perfectly each time
-func (shuffler NaturalShuffle) Shuffle(cardStack CardStack) []Card {
+func (shuffler NaturalShuffle) Shuffle(cardStack CardStack, shuffleTimes int) []Card {
 	remainingCards := cardStack.remainingCards
 	midpointOffset := (len(remainingCards) / 2) + GetMidPointOffset()
 
-	for shuffleCount := 0; shuffleCount < shuffler.ShuffleTimes; shuffleCount++ {
+	for shuffleCount := 0; shuffleCount < shuffleTimes; shuffleCount++ {
 		splitDeck := SplitDeck{Reverse(remainingCards[:midpointOffset]), remainingCards[midpointOffset:], 2}
 		newCards := []Card{}
 		nextCards := splitDeck.DealCards(shuffler.GetNextCardCount())

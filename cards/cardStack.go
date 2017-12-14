@@ -8,19 +8,20 @@ import (
 type CardStack struct {
 	deck           Deck
 	shuffler       ShuffleMethod
+	ShuffleTimes   int
 	remainingCards []Card
 }
 
 // NewCardStack instantiates a new card stack provided a deck and shuffle method.
 // The parameter instantShuffle is a flag indicating whether the CardStack should be shuffled immediately after creation
-func NewCardStack(shuffler ShuffleMethod, deck Deck, instantShuffle bool) CardStack {
+func NewCardStack(deck Deck, shuffler ShuffleMethod, shuffleTimes int, instantShuffle bool) CardStack {
 	stack := CardStack{}
 	stack.deck = deck
 	stack.remainingCards = stack.deck.GetCards()
 	stack.shuffler = shuffler
 
 	if instantShuffle {
-		stack.remainingCards = stack.shuffler.Shuffle(stack)
+		stack.Shuffle()
 	}
 
 	return stack
@@ -29,7 +30,7 @@ func NewCardStack(shuffler ShuffleMethod, deck Deck, instantShuffle bool) CardSt
 // Shuffle shuffles the cards in a cardstack by calling ShufflerMethod.Shuffle
 func (cardStack *CardStack) Shuffle() {
 	cardStack.ResetStack()
-	cardStack.remainingCards = cardStack.shuffler.Shuffle(*cardStack)
+	cardStack.remainingCards = cardStack.shuffler.Shuffle(*cardStack, cardStack.ShuffleTimes)
 }
 
 // ResetStack returns a card stack back to it's original deck state prior to any shuffling

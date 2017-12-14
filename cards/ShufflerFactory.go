@@ -1,14 +1,14 @@
 package cards
 
 // BuildShuffler performs the building of shufflers
-func BuildShuffler(shufflerName string, shuffleTimes int, maxEntropy int) ShuffleMethod {
+func BuildShuffler(shufflerName string, maxEntropy int) ShuffleMethod {
 	var shuffler ShuffleMethod
 	switch shufflerName {
 	case "perfect":
-		shuffler = PerfectShuffle{Shuffler{ShuffleTimes: shuffleTimes, MaxEntropy: maxEntropy}}
+		shuffler = PerfectShuffle{Shuffler{MaxEntropy: maxEntropy}}
 
 	case "natural":
-		shuffler = NaturalShuffle{Shuffler{ShuffleTimes: shuffleTimes, MaxEntropy: maxEntropy}}
+		shuffler = NaturalShuffle{Shuffler{MaxEntropy: maxEntropy}}
 	}
 
 	return shuffler

@@ -7,7 +7,7 @@ type PerfectShuffle struct {
 
 // Shuffle attempts to shuffle cards by uniformly taking cards from top or bottom of the card stack.
 // Entropy is introduced by a random number of cards taken each time
-func (shuffler PerfectShuffle) Shuffle(cardStack CardStack) []Card {
+func (shuffler PerfectShuffle) Shuffle(cardStack CardStack, shuffleTimes int) []Card {
 	cards := []Card{}
 
 	nextCardCount := shuffler.GetNextCardCount()
@@ -15,7 +15,7 @@ func (shuffler PerfectShuffle) Shuffle(cardStack CardStack) []Card {
 
 	// log.Println("Shuffling " + strconv.Itoa(p.ShuffleTimes) + " Times")
 	// Deal out a stack of cards taking cards from top or bottom sequentially
-	for count := 0; count < shuffler.ShuffleTimes; count++ {
+	for count := 0; count < shuffleTimes; count++ {
 		for cardStack.CardsLeft() > 0 {
 			if evenOdd%2 == 0 {
 				cards = append(cards, cardStack.DealCards(nextCardCount)...)

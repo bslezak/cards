@@ -84,10 +84,15 @@ func (cardStack CardStack) GetDeviation() float64 {
 		card1 := cardStack.remainingCards[cardCount]
 		card2 := cardStack.remainingCards[cardCount+1]
 		diff := 0.0
-		if card1.suit != card2.suit {
-			diff += 10
+
+		if card2.suit-1 != card1.suit && card2.rank-card1.rank != 13 {
+			if card1.suit != card2.suit {
+				diff += math.Abs(float64(card2.suit-card1.suit)) * 10
+			}
+
+			diff += math.Abs(float64(card2.rank-card1.rank) - 1)
 		}
-		diff += math.Abs(float64(card1.rank - card2.rank))
+
 		deviations = append(deviations, diff)
 	}
 	// fmt.Printf("Deviations:%+v\n", deviations)
